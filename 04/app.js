@@ -1,246 +1,150 @@
-/* Mobader · D4 "Guided care" · small vanilla JS, no dependencies */
-(() => {
+/* Mobader e5: menu + three faux-UI moments.
+   The HTML already holds every final state, so with no JS or with
+   reduced motion everything is visible. Scripts only replay the story. */
+(function () {
   'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
 
-  const WA = 'https://wa.me/966114170700';
-  const img = (id, w) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
-  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ---------- Content model for the guided flow ---------- */
-  const SERVICES = {
-    doctor: {
-      name: 'زيارة طبيب منزلية',
-      photo: 7653136, alt: 'طبيبة تزور أما وطفلها في البيت',
-      includes: ['كشف كامل في البيت بدون انتظار', 'تشخيص ووصفة طبية في نفس الزيارة']
-    },
-    nursing: {
-      name: 'متابعة تمريض',
-      photo: 8088861, alt: 'يد مقدمة الرعاية تعطي الدواء لشخص كبير في السن',
-      includes: ['ممرضة مرخصة للإبر والمغذيات والجروح', 'قياس العلامات الحيوية ومتابعة الأدوية']
-    },
-    companion: {
-      name: 'مرافق صحي',
-      photo: 7345465, alt: 'مقدمة رعاية مع رجل كبير في السن في غرفة مشمسة',
-      includes: ['عناية يومية بالأدوية والنظافة والحركة', 'بالساعات أو مقيم، حسب احتياجكم']
-    },
-    physio: {
-      name: 'جلسات علاج طبيعي',
-      photo: 20860588, alt: 'أخصائي علاج طبيعي يحرك ساق مريض',
-      includes: ['أخصائي علاج طبيعي يجيكم البيت', 'خطة تمارين تناسب الحالة وتتابع معها']
-    },
-    cupping: {
-      name: 'حجامة منزلية',
-      photo: 7984733, alt: 'رجل سعودي بالشماغ يبتسم أمام حاسوبه',
-      includes: ['حجامة طبية بأدوات معقمة', 'كادر مرخص، للرجال والنساء']
-    }
-  };
-
-  const WHO = {
-    elder: {
-      q: 'وش يحتاج الوالد أو الوالدة؟', for: 'لوالدك أو والدتك', waFor: 'للوالد أو الوالدة',
-      needs: [
-        ['كشف ومتابعة مع طبيب', 'doctor'],
-        ['أدوية وقياس ضغط وسكر', 'nursing'],
-        ['أحد يكون معه خلال اليوم', 'companion'],
-        ['يمشي ويتحرك أحسن', 'physio'],
-        ['جروح أو قسطرة', 'nursing']
-      ]
-    },
-    child: {
-      q: 'وش يحتاج طفلك؟', for: 'لطفلك', waFor: 'لطفلي',
-      needs: [
-        ['حرارة أو كحة', 'doctor'],
-        ['كشف عام في البيت', 'doctor'],
-        ['إبرة أو مغذي', 'nursing']
-      ]
-    },
-    me: {
-      q: 'وش تحتاج؟', for: 'لك', waFor: 'لي',
-      needs: [
-        ['كشف طبيب بدون انتظار', 'doctor'],
-        ['مغذي أو إبرة', 'nursing'],
-        ['آلام ظهر أو مفاصل', 'physio'],
-        ['حجامة', 'cupping']
-      ]
-    },
-    postop: {
-      q: 'وش يحتاج بعد العملية؟', for: 'لمن رجع البيت بعد عملية', waFor: 'لشخص بعد عملية',
-      needs: [
-        ['تغيير الجروح والضماد', 'nursing'],
-        ['تأهيل وعلاج طبيعي', 'physio'],
-        ['مرافق بعد الخروج من المستشفى', 'companion'],
-        ['متابعة مع طبيب', 'doctor']
-      ]
-    }
-  };
-  const UNSURE = ['مو متأكد، أبي أستشير', 'doctor'];
-
-  /* ---------- Flow state ---------- */
-  const flow = document.getElementById('flow');
-  if (flow) {
-    const steps = [...flow.querySelectorAll('.flow-step')];
-    const bars = [...flow.querySelectorAll('.flow-progress i')];
-    const progress = flow.querySelector('.flow-progress');
-    const count = document.getElementById('flowCount');
-    const back = document.getElementById('flowBack');
-    const needsBox = document.getElementById('needs');
-    const needQ = document.getElementById('needQ');
-    const toRec = document.getElementById('toRec');
-    const whoBtns = [...flow.querySelectorAll('.who')];
-    const check = '<span class="need-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>';
-
-    const state = { step: 1, who: null, picked: [] };
-    let busy = false;
-
-    const showStep = (n, dir = 'fwd') => {
-      if (busy || n === state.step) return;
-      const from = steps[state.step - 1];
-      const to = steps[n - 1];
-      const done = () => {
-        from.hidden = true;
-        from.classList.remove('is-leaving', 'from-back');
-        to.hidden = false;
-        to.classList.toggle('from-back', dir === 'back');
-        to.classList.add('is-entering', 'is-active');
-        from.classList.remove('is-active');
-        state.step = n;
-        updateBar();
-        const q = to.querySelector('.flow-q');
-        if (q) q.focus({ preventScroll: true });
-        keepInView();
-        setTimeout(() => to.classList.remove('is-entering', 'from-back'), 450);
-        busy = false;
-      };
-      busy = true;
-      if (reduceMotion()) { done(); return; }
-      from.classList.toggle('from-back', dir === 'back');
-      from.classList.add('is-leaving');
-      setTimeout(done, 190);
+  /* ---------- Mobile menu ---------- */
+  var btn = document.querySelector('.menu-btn');
+  var nav = document.getElementById('site-nav');
+  if (btn && nav) {
+    var setOpen = function (open) {
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
+      nav.classList.toggle('is-open', open);
     };
-
-    const updateBar = () => {
-      bars.forEach((b, i) => b.classList.toggle('on', i < state.step));
-      progress.setAttribute('aria-valuenow', String(state.step));
-      count.textContent = `${state.step} من 3`;
-      back.hidden = state.step === 1;
-      flow.dataset.step = String(state.step);
-    };
-
-    // On phones, keep the top of the flow card visible after a step change.
-    const keepInView = () => {
-      const top = flow.getBoundingClientRect().top;
-      const headerH = document.getElementById('header')?.offsetHeight || 0;
-      if (top < headerH || top > window.innerHeight * 0.5) {
-        window.scrollTo({ top: window.scrollY + top - headerH - 12, behavior: reduceMotion() ? 'auto' : 'smooth' });
-      }
-    };
-
-    const renderNeeds = () => {
-      const who = WHO[state.who];
-      needQ.textContent = who.q;
-      const list = [...who.needs, UNSURE];
-      needsBox.innerHTML = list.map(([label, svc], i) =>
-        `<button type="button" class="need${i === list.length - 1 ? ' need--unsure' : ''}" aria-pressed="false" data-i="${i}" data-svc="${svc}">${check}<span>${label}</span></button>`
-      ).join('');
-      state.picked = [];
-      toRec.disabled = true;
-    };
-
-    whoBtns.forEach(btn => btn.addEventListener('click', () => {
-      if (busy) return;
-      const changed = state.who !== btn.dataset.who;
-      whoBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-      state.who = btn.dataset.who;
-      if (changed || !needsBox.children.length) renderNeeds();
-      // Short pause so the selected state is seen before moving on.
-      setTimeout(() => showStep(2), reduceMotion() ? 0 : 260);
-    }));
-
-    needsBox.addEventListener('click', (e) => {
-      const btn = e.target.closest('.need');
-      if (!btn) return;
-      const on = btn.getAttribute('aria-pressed') !== 'true';
-      btn.setAttribute('aria-pressed', String(on));
-      const i = Number(btn.dataset.i);
-      state.picked = on ? [...state.picked, i] : state.picked.filter(x => x !== i);
-      toRec.disabled = state.picked.length === 0;
-    });
-
-    const renderRec = () => {
-      const who = WHO[state.who];
-      const list = [...who.needs, UNSURE];
-      const keys = [];
-      state.picked.forEach(i => { const k = list[i][1]; if (!keys.includes(k)) keys.push(k); });
-      const top = keys.slice(0, 2);
-      const names = top.map(k => SERVICES[k].name);
-      const title = `ننصحك بـ: ${names.join(' + ')}`;
-      const first = SERVICES[top[0]];
-
-      document.getElementById('recTitle').textContent = title;
-      document.getElementById('recLead').textContent =
-        `حسب اختياراتك، هذا اللي يناسب ${who.for}. نجهز الكادر المناسب ونتابع معكم بعد الزيارة.`;
-
-      const items = top.flatMap(k => SERVICES[k].includes).concat('منسق طبي يتواصل معك ويرتب الموعد');
-      document.getElementById('recList').innerHTML = items
-        .map(t => `<li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>${t}</span></li>`).join('');
-
-      const im = document.getElementById('recImg');
-      im.src = img(first.photo, 900);
-      im.alt = first.alt;
-
-      const msg = `السلام عليكم، أبي أحجز ${names.join(' و')} ${who.waFor}.`;
-      document.getElementById('recWa').href = `${WA}?text=${encodeURIComponent(msg)}`;
-    };
-
-    toRec.addEventListener('click', () => {
-      if (!state.picked.length) return;
-      renderRec();
-      showStep(3);
-    });
-
-    back.addEventListener('click', () => showStep(state.step - 1, 'back'));
-
-    document.getElementById('restart').addEventListener('click', () => {
-      whoBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
-      state.who = null;
-      needsBox.innerHTML = '';
-      showStep(1, 'back');
-    });
-
-    updateBar();
+    btn.addEventListener('click', function () { setOpen(btn.getAttribute('aria-expanded') !== 'true'); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
   }
 
-  /* ---------- Header: border on scroll + mobile menu ---------- */
-  const header = document.getElementById('header');
-  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  /* Run fn once when el is half in view */
+  function onView(el, fn) {
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { io.disconnect(); fn(); }
+      });
+    }, { threshold: 0.45 });
+    io.observe(el);
+  }
 
-  const menuBtn = document.getElementById('menuBtn');
-  const nav = document.getElementById('nav');
-  const setMenu = (open) => {
-    nav.classList.toggle('is-open', open);
-    menuBtn.setAttribute('aria-expanded', String(open));
-  };
-  menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
-  nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
-  document.addEventListener('click', (e) => {
-    if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false);
-  });
+  /* ---------- 1. WhatsApp booking chat ---------- */
+  var chat = document.querySelector('[data-chat]');
+  if (chat) {
+    var msgs = Array.prototype.slice.call(chat.querySelectorAll('.msg'));
+    var card = chat.querySelector('.card-bubble');
+    var tap = chat.querySelector('.tap');
+    var replay = chat.querySelector('[data-replay]');
+    var run = 0;
 
-  /* ---------- Services carousel buttons (RTL aware) ---------- */
-  const car = document.getElementById('car');
-  if (car) {
-    const isRTL = getComputedStyle(car).direction === 'rtl';
-    const stepSize = () => {
-      const card = car.querySelector('.svc');
-      return card ? card.getBoundingClientRect().width + parseFloat(getComputedStyle(car).columnGap || 16) : 320;
+    var playChat = async function () {
+      var id = ++run;
+      var alive = function () { return id === run; };
+      replay.hidden = true;
+      // Snap to the opening frame: the first message only.
+      msgs.forEach(function (m, i) { m.classList.remove('is-typing'); m.classList.toggle('is-pending', i > 0); });
+      chat.classList.add('chat-unconfirmed');
+      await sleep(900); if (!alive()) return;
+
+      for (var i = 1; i < msgs.length; i++) {
+        var m = msgs[i];
+        if (m.classList.contains('in')) {
+          m.classList.add('is-typing');
+          await sleep(i === 3 ? 1300 : 1100); if (!alive()) return;
+          m.classList.remove('is-typing');
+        }
+        m.classList.remove('is-pending');
+        if (i === 3) {
+          // The customer reads the summary, then taps confirm.
+          await sleep(1700); if (!alive()) return;
+          tap.classList.remove('is-on'); void tap.offsetWidth; tap.classList.add('is-on');
+          await sleep(220); if (!alive()) return;
+          chat.classList.remove('chat-unconfirmed');
+        }
+        await sleep(950); if (!alive()) return;
+      }
+      replay.hidden = false;
     };
-    document.querySelectorAll('[data-car]').forEach(btn => btn.addEventListener('click', () => {
-      const dir = btn.dataset.car === 'next' ? 1 : -1;
-      // In RTL, "next" moves toward negative scrollLeft.
-      car.scrollBy({ left: (isRTL ? -dir : dir) * stepSize(), behavior: reduceMotion() ? 'auto' : 'smooth' });
-    }));
+
+    if (!reduce) {
+      onView(chat, playChat);
+      replay.addEventListener('click', playChat);
+    }
+  }
+
+  /* ---------- 2. Visit status card ---------- */
+  var visit = document.querySelector('[data-visit]');
+  var stepsWrap = document.querySelector('[data-steps]');
+  if (visit && stepsWrap) {
+    var STATES = [
+      { status: 'تم استلام طلبك', note: 'وصلنا طلبك من واتساب، والمنسق الطبي بيتصل عليك.' },
+      { status: 'المنسق أكد الموعد', note: 'فهمنا حالة المريض، وثبتنا الموعد اللي يناسبك.' },
+      { status: 'الطبيبة في الطريق لك', note: 'المنسق أكد الموعد معك، والطبيبة معها ملف الحالة.' },
+      { status: 'تقرير الزيارة جاهز', note: 'التشخيص والوصفة وخطة المتابعة، في رسالة وحدة.' }
+    ];
+    var statusEl = visit.querySelector('[data-status]');
+    var noteEl = visit.querySelector('[data-note]');
+    var segs = visit.querySelectorAll('[data-track] i');
+    var stepBtns = stepsWrap.querySelectorAll('[data-step]');
+    var current = 2;
+    var auto = 0;
+
+    var setStep = function (n, animate) {
+      if (n === current && animate) return;
+      current = n;
+      stepBtns.forEach(function (b, i) { b.setAttribute('aria-pressed', String(i === n)); });
+      segs.forEach(function (s, i) {
+        s.classList.toggle('done', i < n || (n === 3 && i === 3));
+        s.classList.toggle('current', i === n && n !== 3);
+      });
+      var s = STATES[n];
+      if (!animate || reduce) { statusEl.textContent = s.status; noteEl.textContent = s.note; return; }
+      statusEl.classList.add('is-out');
+      noteEl.classList.add('is-fading');
+      setTimeout(function () {
+        statusEl.textContent = s.status;
+        noteEl.textContent = s.note;
+        statusEl.classList.remove('is-out');
+        statusEl.classList.add('is-in');
+        void statusEl.offsetWidth;
+        statusEl.classList.remove('is-in');
+        noteEl.classList.remove('is-fading');
+      }, 300);
+    };
+
+    stepBtns.forEach(function (b) {
+      b.addEventListener('click', function () { auto++; setStep(Number(b.dataset.step), true); });
+    });
+
+    if (!reduce) {
+      onView(visit, async function () {
+        var id = ++auto;
+        setStep(0, false);
+        for (var n = 1; n < 4; n++) {
+          await sleep(2400); if (id !== auto) return;
+          setStep(n, true);
+        }
+      });
+    }
+  }
+
+  /* ---------- 3. Daily report ---------- */
+  var report = document.querySelector('[data-report]');
+  if (report && !reduce) {
+    var items = report.querySelectorAll('.rp-list li');
+    var count = report.querySelector('[data-count]');
+    onView(report, async function () {
+      items.forEach(function (li) { li.classList.remove('is-done'); });
+      count.textContent = 'تم 0 من 4';
+      await sleep(600);
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.add('is-done');
+        count.textContent = 'تم ' + (i + 1) + ' من 4';
+        await sleep(650);
+      }
+    });
   }
 })();

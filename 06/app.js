@@ -1,38 +1,25 @@
-// Mobader d8-soft: WhatsApp prefilled links + mobile menu. No scroll animations.
-(function () {
-  var WA = 'https://wa.me/966114170700';
+// Mobader homepage prototype — small, dependency-free JS
+(() => {
+  const root = document.documentElement;
 
-  // Any element with data-wa gets a WhatsApp link with that message prefilled.
-  document.querySelectorAll('[data-wa]').forEach(function (a) {
-    var msg = a.getAttribute('data-wa');
-    if (msg) a.href = WA + '?text=' + encodeURIComponent(msg);
-    a.target = '_blank';
-    a.rel = 'noopener';
-  });
+  // Sticky header border on scroll
+  const header = document.getElementById('header');
+  const onScroll = () => header.classList.toggle('scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-  // Mobile menu
-  var btn = document.querySelector('.menu-btn');
-  var menu = document.getElementById('mobile-menu');
-  if (!btn || !menu) return;
-  var use = btn.querySelector('use');
+  // Mobile drawer
+  const drawer = document.getElementById('drawer');
+  document.getElementById('menuBtn').addEventListener('click', () => drawer.classList.add('open'));
+  drawer.addEventListener('click', (e) => { if (e.target === drawer || e.target.tagName === 'A') drawer.classList.remove('open'); });
 
-  function setOpen(open) {
-    btn.setAttribute('aria-expanded', String(open));
-    btn.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
-    menu.hidden = !open;
-    if (use) use.setAttribute('href', open ? '#i-close' : '#i-menu');
-  }
+  // Single-select chips and tabs
+  const single = (sel) => document.querySelectorAll(sel).forEach(group => {
+    group.addEventListener('click', (e) => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      const attr = btn.hasAttribute('aria-selected') ? 'aria-selected' : 'aria-pressed';
+      group.querySelectorAll('button').forEach(b => b.setAttribute(attr, b === btn));
+    });
+  });
+  single('.chips'); single('.tabs');
 
-  btn.addEventListener('click', function () {
-    setOpen(btn.getAttribute('aria-expanded') !== 'true');
-  });
-  menu.addEventListener('click', function (e) {
-    if (e.target.closest('a')) setOpen(false);
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !menu.hidden) { setOpen(false); btn.focus(); }
-  });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth > 1024 && !menu.hidden) setOpen(false);
-  });
 })();

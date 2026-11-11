@@ -1,251 +1,246 @@
-/* Mobader D3 "Bento" — small vanilla JS. No dependencies. */
-(function () {
+/* Mobader · D4 "Guided care" · small vanilla JS, no dependencies */
+(() => {
   'use strict';
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const WA = 'https://wa.me/966114170700';
+  const img = (id, w) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function replay(el, cls) {
-    if (reduceMotion || !el) return;
-    el.classList.remove(cls);
-    void el.offsetWidth; // restart animation
-    el.classList.add(cls);
+  /* ---------- Content model for the guided flow ---------- */
+  const SERVICES = {
+    doctor: {
+      name: 'زيارة طبيب منزلية',
+      photo: 7653136, alt: 'طبيبة تزور أما وطفلها في البيت',
+      includes: ['كشف كامل في البيت بدون انتظار', 'تشخيص ووصفة طبية في نفس الزيارة']
+    },
+    nursing: {
+      name: 'متابعة تمريض',
+      photo: 8088861, alt: 'يد مقدمة الرعاية تعطي الدواء لشخص كبير في السن',
+      includes: ['ممرضة مرخصة للإبر والمغذيات والجروح', 'قياس العلامات الحيوية ومتابعة الأدوية']
+    },
+    companion: {
+      name: 'مرافق صحي',
+      photo: 7345465, alt: 'مقدمة رعاية مع رجل كبير في السن في غرفة مشمسة',
+      includes: ['عناية يومية بالأدوية والنظافة والحركة', 'بالساعات أو مقيم، حسب احتياجكم']
+    },
+    physio: {
+      name: 'جلسات علاج طبيعي',
+      photo: 20860588, alt: 'أخصائي علاج طبيعي يحرك ساق مريض',
+      includes: ['أخصائي علاج طبيعي يجيكم البيت', 'خطة تمارين تناسب الحالة وتتابع معها']
+    },
+    cupping: {
+      name: 'حجامة منزلية',
+      photo: 7984733, alt: 'رجل سعودي بالشماغ يبتسم أمام حاسوبه',
+      includes: ['حجامة طبية بأدوات معقمة', 'كادر مرخص، للرجال والنساء']
+    }
+  };
+
+  const WHO = {
+    elder: {
+      q: 'وش يحتاج الوالد أو الوالدة؟', for: 'لوالدك أو والدتك', waFor: 'للوالد أو الوالدة',
+      needs: [
+        ['كشف ومتابعة مع طبيب', 'doctor'],
+        ['أدوية وقياس ضغط وسكر', 'nursing'],
+        ['أحد يكون معه خلال اليوم', 'companion'],
+        ['يمشي ويتحرك أحسن', 'physio'],
+        ['جروح أو قسطرة', 'nursing']
+      ]
+    },
+    child: {
+      q: 'وش يحتاج طفلك؟', for: 'لطفلك', waFor: 'لطفلي',
+      needs: [
+        ['حرارة أو كحة', 'doctor'],
+        ['كشف عام في البيت', 'doctor'],
+        ['إبرة أو مغذي', 'nursing']
+      ]
+    },
+    me: {
+      q: 'وش تحتاج؟', for: 'لك', waFor: 'لي',
+      needs: [
+        ['كشف طبيب بدون انتظار', 'doctor'],
+        ['مغذي أو إبرة', 'nursing'],
+        ['آلام ظهر أو مفاصل', 'physio'],
+        ['حجامة', 'cupping']
+      ]
+    },
+    postop: {
+      q: 'وش يحتاج بعد العملية؟', for: 'لمن رجع البيت بعد عملية', waFor: 'لشخص بعد عملية',
+      needs: [
+        ['تغيير الجروح والضماد', 'nursing'],
+        ['تأهيل وعلاج طبيعي', 'physio'],
+        ['مرافق بعد الخروج من المستشفى', 'companion'],
+        ['متابعة مع طبيب', 'doctor']
+      ]
+    }
+  };
+  const UNSURE = ['مو متأكد، أبي أستشير', 'doctor'];
+
+  /* ---------- Flow state ---------- */
+  const flow = document.getElementById('flow');
+  if (flow) {
+    const steps = [...flow.querySelectorAll('.flow-step')];
+    const bars = [...flow.querySelectorAll('.flow-progress i')];
+    const progress = flow.querySelector('.flow-progress');
+    const count = document.getElementById('flowCount');
+    const back = document.getElementById('flowBack');
+    const needsBox = document.getElementById('needs');
+    const needQ = document.getElementById('needQ');
+    const toRec = document.getElementById('toRec');
+    const whoBtns = [...flow.querySelectorAll('.who')];
+    const check = '<span class="need-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>';
+
+    const state = { step: 1, who: null, picked: [] };
+    let busy = false;
+
+    const showStep = (n, dir = 'fwd') => {
+      if (busy || n === state.step) return;
+      const from = steps[state.step - 1];
+      const to = steps[n - 1];
+      const done = () => {
+        from.hidden = true;
+        from.classList.remove('is-leaving', 'from-back');
+        to.hidden = false;
+        to.classList.toggle('from-back', dir === 'back');
+        to.classList.add('is-entering', 'is-active');
+        from.classList.remove('is-active');
+        state.step = n;
+        updateBar();
+        const q = to.querySelector('.flow-q');
+        if (q) q.focus({ preventScroll: true });
+        keepInView();
+        setTimeout(() => to.classList.remove('is-entering', 'from-back'), 450);
+        busy = false;
+      };
+      busy = true;
+      if (reduceMotion()) { done(); return; }
+      from.classList.toggle('from-back', dir === 'back');
+      from.classList.add('is-leaving');
+      setTimeout(done, 190);
+    };
+
+    const updateBar = () => {
+      bars.forEach((b, i) => b.classList.toggle('on', i < state.step));
+      progress.setAttribute('aria-valuenow', String(state.step));
+      count.textContent = `${state.step} من 3`;
+      back.hidden = state.step === 1;
+      flow.dataset.step = String(state.step);
+    };
+
+    // On phones, keep the top of the flow card visible after a step change.
+    const keepInView = () => {
+      const top = flow.getBoundingClientRect().top;
+      const headerH = document.getElementById('header')?.offsetHeight || 0;
+      if (top < headerH || top > window.innerHeight * 0.5) {
+        window.scrollTo({ top: window.scrollY + top - headerH - 12, behavior: reduceMotion() ? 'auto' : 'smooth' });
+      }
+    };
+
+    const renderNeeds = () => {
+      const who = WHO[state.who];
+      needQ.textContent = who.q;
+      const list = [...who.needs, UNSURE];
+      needsBox.innerHTML = list.map(([label, svc], i) =>
+        `<button type="button" class="need${i === list.length - 1 ? ' need--unsure' : ''}" aria-pressed="false" data-i="${i}" data-svc="${svc}">${check}<span>${label}</span></button>`
+      ).join('');
+      state.picked = [];
+      toRec.disabled = true;
+    };
+
+    whoBtns.forEach(btn => btn.addEventListener('click', () => {
+      if (busy) return;
+      const changed = state.who !== btn.dataset.who;
+      whoBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      state.who = btn.dataset.who;
+      if (changed || !needsBox.children.length) renderNeeds();
+      // Short pause so the selected state is seen before moving on.
+      setTimeout(() => showStep(2), reduceMotion() ? 0 : 260);
+    }));
+
+    needsBox.addEventListener('click', (e) => {
+      const btn = e.target.closest('.need');
+      if (!btn) return;
+      const on = btn.getAttribute('aria-pressed') !== 'true';
+      btn.setAttribute('aria-pressed', String(on));
+      const i = Number(btn.dataset.i);
+      state.picked = on ? [...state.picked, i] : state.picked.filter(x => x !== i);
+      toRec.disabled = state.picked.length === 0;
+    });
+
+    const renderRec = () => {
+      const who = WHO[state.who];
+      const list = [...who.needs, UNSURE];
+      const keys = [];
+      state.picked.forEach(i => { const k = list[i][1]; if (!keys.includes(k)) keys.push(k); });
+      const top = keys.slice(0, 2);
+      const names = top.map(k => SERVICES[k].name);
+      const title = `ننصحك بـ: ${names.join(' + ')}`;
+      const first = SERVICES[top[0]];
+
+      document.getElementById('recTitle').textContent = title;
+      document.getElementById('recLead').textContent =
+        `حسب اختياراتك، هذا اللي يناسب ${who.for}. نجهز الكادر المناسب ونتابع معكم بعد الزيارة.`;
+
+      const items = top.flatMap(k => SERVICES[k].includes).concat('منسق طبي يتواصل معك ويرتب الموعد');
+      document.getElementById('recList').innerHTML = items
+        .map(t => `<li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>${t}</span></li>`).join('');
+
+      const im = document.getElementById('recImg');
+      im.src = img(first.photo, 900);
+      im.alt = first.alt;
+
+      const msg = `السلام عليكم، أبي أحجز ${names.join(' و')} ${who.waFor}.`;
+      document.getElementById('recWa').href = `${WA}?text=${encodeURIComponent(msg)}`;
+    };
+
+    toRec.addEventListener('click', () => {
+      if (!state.picked.length) return;
+      renderRec();
+      showStep(3);
+    });
+
+    back.addEventListener('click', () => showStep(state.step - 1, 'back'));
+
+    document.getElementById('restart').addEventListener('click', () => {
+      whoBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      state.who = null;
+      needsBox.innerHTML = '';
+      showStep(1, 'back');
+    });
+
+    updateBar();
   }
 
   /* ---------- Header: border on scroll + mobile menu ---------- */
-  var header = document.querySelector('.header');
-  function onScroll() { header.classList.toggle('is-scrolled', window.scrollY > 8); }
+  const header = document.getElementById('header');
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  var menuBtn = document.getElementById('menuBtn');
-  var nav = document.getElementById('nav');
-  function setMenu(open) {
+  const menuBtn = document.getElementById('menuBtn');
+  const nav = document.getElementById('nav');
+  const setMenu = (open) => {
     nav.classList.toggle('is-open', open);
     menuBtn.setAttribute('aria-expanded', String(open));
-    menuBtn.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
-  }
-  menuBtn.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
-  nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); menuBtn.focus(); }
+  };
+  menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
+  nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('is-open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false);
   });
 
-  /* ---------- Segmented tabs (services + packages) ---------- */
-  var tabGroups = [];
-
-  function initTabs(list) {
-    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
-    var thumb = list.querySelector('.seg-thumb');
-
-    function moveThumb(tab) {
-      if (!thumb) return;
-      thumb.style.left = tab.offsetLeft + 'px';
-      thumb.style.width = tab.offsetWidth + 'px';
-    }
-
-    function select(tab, opts) {
-      opts = opts || {};
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        var panel = document.getElementById(t.getAttribute('aria-controls'));
-        if (panel) {
-          panel.classList.toggle('is-active', on);
-          if (on && opts.animate) replay(panel, 'is-entering');
-        }
-      });
-      moveThumb(tab);
-      if (opts.focus) tab.focus();
-      if (opts.animate && list.scrollWidth > list.clientWidth) {
-        tab.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
-      }
-    }
-
-    tabs.forEach(function (tab, i) {
-      tab.addEventListener('click', function () { select(tab, { animate: true }); });
-      tab.addEventListener('keydown', function (e) {
-        var n = tabs.length, j = null;
-        // RTL: Left arrow moves forward, Right arrow moves back.
-        if (e.key === 'ArrowLeft') j = (i + 1) % n;
-        else if (e.key === 'ArrowRight') j = (i - 1 + n) % n;
-        else if (e.key === 'Home') j = 0;
-        else if (e.key === 'End') j = n - 1;
-        if (j !== null) { e.preventDefault(); select(tabs[j], { animate: true, focus: true }); }
-      });
-    });
-
-    var group = {
-      list: list,
-      refresh: function () {
-        var cur = tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || tabs[0];
-        moveThumb(cur);
-      },
-      selectById: function (panelId) {
-        var t = tabs.filter(function (x) { return x.getAttribute('aria-controls') === panelId; })[0];
-        if (t) select(t, { animate: true });
-      }
+  /* ---------- Services carousel buttons (RTL aware) ---------- */
+  const car = document.getElementById('car');
+  if (car) {
+    const isRTL = getComputedStyle(car).direction === 'rtl';
+    const stepSize = () => {
+      const card = car.querySelector('.svc');
+      return card ? card.getBoundingClientRect().width + parseFloat(getComputedStyle(car).columnGap || 16) : 320;
     };
-    tabGroups.push(group);
-    group.refresh();
-    return group;
+    document.querySelectorAll('[data-car]').forEach(btn => btn.addEventListener('click', () => {
+      const dir = btn.dataset.car === 'next' ? 1 : -1;
+      // In RTL, "next" moves toward negative scrollLeft.
+      car.scrollBy({ left: (isRTL ? -dir : dir) * stepSize(), behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }));
   }
-
-  var groups = {};
-  document.querySelectorAll('[data-tabs]').forEach(function (list) {
-    groups[list.getAttribute('data-tabs')] = initTabs(list);
-  });
-  function refreshThumbs() { tabGroups.forEach(function (g) { g.refresh(); }); }
-  window.addEventListener('resize', refreshThumbs);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshThumbs);
-  window.addEventListener('load', refreshThumbs);
-
-  /* ---------- Booking widget ---------- */
-  var form = document.getElementById('bookForm');
-  if (!form) return;
-
-  var steps = Array.prototype.slice.call(form.querySelectorAll('.book-step'));
-  var stepperItems = Array.prototype.slice.call(document.querySelectorAll('#stepper li'));
-  var fill = document.getElementById('stepperFill');
-  var count = document.getElementById('bookCount');
-  var done = document.getElementById('bookDone');
-  var btnNext = document.getElementById('bookNext');
-  var btnBack = document.getElementById('bookBack');
-  var btnAgain = document.getElementById('bookAgain');
-  var phone = document.getElementById('phone');
-  var phoneErr = document.getElementById('phoneErr');
-  var phoneField = phone.closest('.phone-field');
-  var total = steps.length;
-  var current = 1;
-  var finished = false;
-
-  function val(name) {
-    var el = form.querySelector('input[name="' + name + '"]:checked');
-    return el ? el.value : '';
-  }
-
-  function render() {
-    steps.forEach(function (s) {
-      var on = !finished && Number(s.getAttribute('data-step')) === current;
-      if (on && !s.classList.contains('is-active')) {
-        s.classList.add('is-active');
-      } else if (!on) {
-        s.classList.remove('is-active');
-      }
-    });
-    done.classList.toggle('is-active', finished);
-
-    stepperItems.forEach(function (li, i) {
-      var n = i + 1;
-      var isDone = finished || n < current;
-      li.classList.toggle('is-done', isDone);
-      li.classList.toggle('is-active', !finished && n === current);
-      if (!finished && n === current) li.setAttribute('aria-current', 'step');
-      else li.removeAttribute('aria-current');
-    });
-    fill.style.width = (finished ? 100 : (current / total) * 100) + '%';
-    count.textContent = finished ? 'تم إرسال الطلب' : 'الخطوة ' + current + ' من ' + total;
-
-    form.classList.toggle('at-first', current === 1);
-    form.classList.toggle('at-last', current === total);
-    form.classList.toggle('is-done', finished);
-
-    if (current === 3) {
-      document.getElementById('sumService').textContent = val('service');
-      document.getElementById('sumTime').textContent = val('day') + '، ' + val('time');
-    }
-  }
-
-  // Disable time slots that already passed today (Riyadh time).
-  function riyadhHour() {
-    try {
-      var h = new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Riyadh' }).format(new Date());
-      return parseInt(h, 10) % 24;
-    } catch (e) { return new Date().getHours(); }
-  }
-  function updateTimes() {
-    var today = val('day') === 'اليوم';
-    var nowH = riyadhHour();
-    var needReset = false;
-    form.querySelectorAll('input[name="time"][data-hour]').forEach(function (inp) {
-      var past = today && Number(inp.getAttribute('data-hour')) <= nowH + 1;
-      inp.disabled = past;
-      if (past && inp.checked) needReset = true;
-    });
-    if (needReset) form.querySelector('input[name="time"]:not([data-hour])').checked = true;
-  }
-  form.querySelectorAll('input[name="day"]').forEach(function (r) { r.addEventListener('change', updateTimes); });
-
-  function cleanPhone() {
-    var d = phone.value.replace(/[^\d٠-٩]/g, '').replace(/[٠-٩]/g, function (c) { return String(c.charCodeAt(0) - 1632); });
-    if (d.indexOf('966') === 0) d = d.slice(3);
-    if (d.charAt(0) === '0') d = d.slice(1);
-    return d;
-  }
-  function validPhone() {
-    var ok = /^5\d{8}$/.test(cleanPhone());
-    phoneField.classList.toggle('has-err', !ok);
-    phone.setAttribute('aria-invalid', String(!ok));
-    phoneErr.textContent = ok ? '' : 'اكتب رقم جوال سعودي صحيح، مثل 5X XXX XXXX';
-    return ok;
-  }
-  phone.addEventListener('input', function () {
-    if (phoneField.classList.contains('has-err')) validPhone();
-  });
-
-  function go(n, focus) {
-    current = Math.max(1, Math.min(total, n));
-    if (current === 2) updateTimes();
-    render();
-    if (focus) {
-      var target = current === 3 ? phone : steps[current - 1].querySelector('input:checked');
-      if (target) target.focus({ preventScroll: true });
-    }
-  }
-
-  btnNext.addEventListener('click', function () { go(current + 1, true); });
-  btnBack.addEventListener('click', function () { go(current - 1, true); });
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (current !== total) { go(current + 1, true); return; }
-    if (!validPhone()) { phone.focus(); return; }
-    // Prototype only: no network request. Connect to the real form handler in WordPress.
-    finished = true;
-    render();
-    done.focus({ preventScroll: true });
-  });
-
-  // Enter in the phone field submits; Enter elsewhere moves forward.
-  form.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && e.target.type === 'radio') { e.preventDefault(); go(current + 1, true); }
-  });
-
-  btnAgain.addEventListener('click', function () {
-    finished = false;
-    phone.value = '';
-    phoneErr.textContent = '';
-    phoneField.classList.remove('has-err');
-    go(1, true);
-  });
-
-  // "Book this service" buttons across the page pre-fill the widget.
-  document.querySelectorAll('[data-book]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      var name = a.getAttribute('data-book');
-      var radio = form.querySelector('input[name="service"][value="' + name + '"]');
-      if (radio) radio.checked = true;
-      finished = false;
-      go(2, false);
-    });
-  });
-
-  // "See packages" from the companion service opens the right package tab.
-  document.querySelectorAll('[data-pack]').forEach(function (a) {
-    a.addEventListener('click', function () {
-      if (groups.pk) groups.pk.selectById('pk-' + a.getAttribute('data-pack'));
-    });
-  });
-
-  render();
 })();

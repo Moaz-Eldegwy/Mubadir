@@ -1,4 +1,4 @@
-// Mobader homepage (x4-v0-b): mobile menu toggle + demo form (no submit), ported from page.tsx state.
+// Mobader homepage (x3-v0): mobile menu toggle + demo form (no submit), ported from page.tsx state.
 (function () {
   var nav = document.getElementById('main-nav');
   var toggle = document.querySelector('.menu-toggle');
