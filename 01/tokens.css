@@ -1,0 +1,84 @@
+
+
+:root {
+  
+  --plum-50:  #FBF3FA;
+  --plum-100: #F5E4F3;
+  --plum-200: #EBC8E8;
+  --plum-300: #DB9FD6;
+  --plum-400: #C46BBD;
+  --plum-500: #A83AA2;
+  --plum-600: #92258E; 
+  --plum-700: #771D74;
+  --plum-800: #5E185C;
+  --plum-900: #45123F;
+  --plum-950: #2A0A28;
+
+  
+  --gray-50:  #F7F7F8;
+  --gray-100: #EEEEF0;
+  --gray-200: #DEDEE2;
+  --gray-300: #C4C5CA;
+  --gray-400: #9FA0A6;
+  --gray-500: #7F8084; 
+  --gray-600: #64656A;
+  --gray-700: #4B4C51;
+  --gray-800: #2F3034;
+  --gray-900: #1C1C20;
+  --gray-950: #121215;
+
+  
+  --teal-600: #0E8A7A;
+  --teal-100: #DDF3EF;
+  --sand-50:  #FBF7F2;
+  --sand-100: #F4ECE2;
+  --amber-500:#E8A23B;
+  --green-600:#16A34A;
+
+  
+  --fs-xs: .8125rem;
+  --fs-sm: .9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  --fs-3xl: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+
+  
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+
+  --container: 1200px;
+  --shadow-sm: 0 1px 2px rgb(30 10 30 / .06), 0 1px 3px rgb(30 10 30 / .06);
+  --shadow-md: 0 8px 24px -8px rgb(70 18 63 / .18);
+  --shadow-lg: 0 24px 60px -20px rgb(70 18 63 / .30);
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+
+:root {
+  --font: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --radius-sm: 10px; --radius: 16px; --radius-lg: 24px; --radius-pill: 999px;
+
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: var(--gray-50);
+  --surface-tint: var(--plum-50);
+  --text: var(--gray-900);
+  --text-muted: var(--gray-600);
+  --border: var(--gray-200);
+  --primary: var(--plum-600);
+  --primary-hover: var(--plum-700);
+  --on-primary: #FFFFFF;
+  --primary-soft: var(--plum-100);
+  --primary-text: var(--plum-700);
+  --accent: var(--teal-600);
+  --accent-soft: var(--teal-100);
+
+  --hero-bg: linear-gradient(180deg, var(--plum-50) 0%, #FFFFFF 100%);
+  --hero-ink: var(--gray-900);
+  --hero-muted: var(--gray-600);
+  --band-bg: var(--plum-900);
+  --band-ink: #FFFFFF;
+}
+

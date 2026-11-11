@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مبادر للرعاية الطبية المنزلية - التصميم 01</title>
+  <link rel="icon" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main id="home" dir="rtl" class="v1-page">
+
+  <!-- Pattern: mobader/header -->
+  <header class="v1-header">
+    <div class="v1-header__bar">
+      <a href="#home" class="v1-logo" aria-label="مبادر للرعاية الطبية المنزلية - الرئيسية">
+        <img src="logo.png" alt="مبادر للرعاية الطبية المنزلية" />
+      </a>
+      <nav class="v1-nav" aria-label="التنقل الرئيسي">
+        <a href="#about" class="nav-link">عن مبادر</a>
+        <a href="#services" class="nav-link">خدماتنا</a>
+        <a href="#process" class="nav-link">كيف نعمل</a>
+        <a href="#reviews" class="nav-link">تجارب العملاء</a>
+        <a href="#faq" class="nav-link">الأسئلة الشائعة</a>
+      </nav>
+      <div class="v1-header__actions">
+        <a href="tel:+966550000000" class="v1-header__phone" dir="ltr">9200 00000</a>
+        <a href="#booking" class="v1-header__cta">احجز زيارة</a>
+      </div>
+      <button type="button" class="v1-menu-btn" data-menu-toggle aria-label="فتح القائمة" aria-expanded="false" aria-controls="v1-mobile-menu">
+        <span class="v1-menu-btn__lines">
+          <i class="v1-menu-btn__line"></i>
+          <i class="v1-menu-btn__line"></i>
+        </span>
+      </button>
+    </div>
+    <div id="v1-mobile-menu" class="v1-mobile-menu" data-menu hidden>
+      <a href="#about" class="v1-mobile-menu__link">عن مبادر</a>
+      <a href="#services" class="v1-mobile-menu__link">خدماتنا</a>
+      <a href="#process" class="v1-mobile-menu__link">كيف نعمل</a>
+      <a href="#reviews" class="v1-mobile-menu__link">تجارب العملاء</a>
+      <a href="#faq" class="v1-mobile-menu__link">الأسئلة الشائعة</a>
+      <a href="#booking" class="v1-mobile-menu__cta">احجز زيارة</a>
+    </div>
+  </header>
+
+  <!-- Pattern: mobader/hero -->
+  <section class="v1-hero">
+    <div class="hero-photo v1-hero__photo" style="background-image: url('https://images.unsplash.com/photo-1758691462477-976f771224d8?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;q=86&amp;w=1600')"></div>
+    <div class="v1-hero__overlay"></div>
+    <div class="v1-hero__overlay-mobile"></div>
+    <div class="hero-orbit v1-hero__orbit"></div>
+    <div class="v1-hero__inner">
+      <div class="v1-hero__content">
+        <div class="v1-hero__kicker">
+          <span class="v1-hero__kicker-line"></span>
+          <p class="v1-hero__kicker-text">رعاية مرخّصة تصل إلى بابك</p>
+        </div>
+        <h1 class="v1-hero__title">
+          صحتك وراحتك،
+          <span class="v1-hero__title-accent">في بيتك.</span>
+        </h1>
+        <p class="v1-hero__lead">
+          أطباء، تمريض ومرافقون صحيون مختارون بعناية. رعاية طبية متكاملة لكل أفراد العائلة، من
+          غير مشاوير ولا انتظار.
+        </p>
+        <div class="v1-hero__actions">
+          <a href="#booking" class="v1-btn-primary">
+            احجز استشارتك
+            <svg class="icon icon--md icon--flip v1-btn-primary__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <a href="tel:+966550000000" class="v1-btn-outline">
+            <span class="v1-btn-outline__icon">
+              <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-4-1-2 2c-4-1.5-7.5-5-9-9l2-2-1-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+              </svg>
+            </span>
+            اتصال مباشر
+          </a>
+        </div>
+        <div class="v1-hero__proof">
+          <div class="v1-avatars">
+            <span class="v1-avatars__item">أ</span>
+            <span class="v1-avatars__item">م</span>
+            <span class="v1-avatars__item">س</span>
+          </div>
+          <div>
+            <div class="v1-hero__stars">
+              ★★★★★ <span class="v1-hero__score">4.9</span>
+            </div>
+            <p class="v1-hero__proof-text">ثقة أكثر من 2,500 عائلة</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="#about" class="v1-scroll-cue">
+      <span class="v1-scroll-cue__mouse">
+        <span class="v1-scroll-cue__dot"></span>
+      </span>
+      اكتشف مبادر
+    </a>
+  </section>
+
+  <!-- Pattern: mobader/stats -->
+  <section class="v1-stats">
+    <div class="v1-stats__grid">
+      <div class="v1-stats__item">
+        <strong class="v1-stats__value" dir="ltr">24/7</strong>
+        <span class="v1-stats__label">خدمة على مدار الساعة</span>
+      </div>
+      <div class="v1-stats__item">
+        <strong class="v1-stats__value" dir="ltr">+2,500</strong>
+        <span class="v1-stats__label">عائلة نخدمها</span>
+      </div>
+      <div class="v1-stats__item">
+        <strong class="v1-stats__value" dir="ltr">+50</strong>
+        <span class="v1-stats__label">مختصاً صحياً</span>
+      </div>
+      <div class="v1-stats__item">
+        <strong class="v1-stats__value" dir="ltr">100%</strong>
+        <span class="v1-stats__label">مرخّصون ومعتمدون</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/about -->
+  <section id="about" class="v1-about">
+    <div class="v1-about__number" aria-hidden="true">01</div>
+    <div class="v1-about__grid">
+      <div class="v1-about__media">
+        <div class="v1-about__photo">
+          <img src="https://images.unsplash.com/photo-1758691462477-976f771224d8?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;q=86&amp;w=1600" alt="طبيب يقدم الرعاية لمريض في منزله" />
+        </div>
+        <div class="v1-about__badge">
+          <div class="v1-about__badge-icon">
+            <svg class="icon icon--lg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <strong class="v1-about__badge-title">مرخّصون من وزارة الصحة</strong>
+          <p class="v1-about__badge-text">معايير طبية وجودة تقدر تثق فيها.</p>
+        </div>
+      </div>
+      <div class="v1-about__content">
+        <p class="eyebrow">عن مبادر</p>
+        <h2 class="section-title">
+          الرعاية الأفضل تبدأ
+          <br />
+          من المكان الأريح.
+        </h2>
+        <p class="v1-about__text">
+          نؤمن أن البيت جزء من العلاج. لذلك جمعنا فريقاً طبياً متكاملاً، ووضعنا خبرته بين يديك بخدمة
+          بسيطة، سريعة وإنسانية.
+        </p>
+        <div class="v1-about__checks">
+          <div class="v1-check"><span class="v1-check__icon"><svg class="icon icon--xs" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 7 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></span>فريق مختار وموثوق</div>
+          <div class="v1-check"><span class="v1-check__icon"><svg class="icon icon--xs" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 7 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></span>مواعيد تناسب يومك</div>
+          <div class="v1-check"><span class="v1-check__icon"><svg class="icon icon--xs" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 7 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></span>خطة تناسب كل حالة</div>
+          <div class="v1-check"><span class="v1-check__icon"><svg class="icon icon--xs" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 7 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></span>متابعة بعد كل زيارة</div>
+        </div>
+        <a href="#services" class="v1-about__link">
+          تعرّف على خدماتنا
+          <svg class="icon icon--sm icon--flip" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/services -->
+  <section id="services" class="v1-services">
+    <div class="v1-container">
+      <div class="v1-section-head">
+        <div>
+          <p class="eyebrow eyebrow--light">خدماتنا</p>
+          <h2 class="section-title section-title--light">
+            كل ما تحتاجه،
+            <br />
+            يجيلك للبيت.
+          </h2>
+        </div>
+        <p class="v1-section-head__text">
+          خدمات صحية متكاملة، يقدّمها فريق مؤهل بأحدث الممارسات وباهتمام حقيقي بتفاصيل حالتك.
+        </p>
+      </div>
+      <div class="v1-services__grid">
+        <article class="service-card v1-service-card">
+          <div class="v1-service-card__top">
+            <span class="v1-service-card__icon">
+              <svg class="icon icon--xl" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 4v5a3 3 0 0 0 6 0V4M7 4h2m6 0h2M12 16a4 4 0 1 0 8 0v-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                <circle cx="20" cy="12" r="2" stroke="currentColor" stroke-width="1.7" />
+              </svg>
+            </span>
+            <span class="v1-service-card__number">01</span>
+          </div>
+          <div class="v1-service-card__body">
+            <h3 class="v1-service-card__title">طبيب يجيك للبيت</h3>
+            <p class="v1-service-card__text">فحص وتشخيص ووصفة علاجية من أطباء ذوي خبرة، في راحة منزلك.</p>
+            <button type="button" class="v1-service-card__link" data-service="طبيب يجيك للبيت">
+              احجز الخدمة
+              <svg class="icon icon--sm icon--flip v1-service-card__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+        <article class="service-card v1-service-card">
+          <div class="v1-service-card__top">
+            <span class="v1-service-card__icon">
+              <svg class="icon icon--xl" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21s8-4.5 8-11V5l-8-3-8 3v5c0 6.5 8 11 8 11Z" stroke="currentColor" stroke-width="1.7" />
+                <path d="M12 7v6m-3-3h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="v1-service-card__number">02</span>
+          </div>
+          <div class="v1-service-card__body">
+            <h3 class="v1-service-card__title">تمريض منزلي</h3>
+            <p class="v1-service-card__text">زيارات تمريضية احترافية للأدوية، الغيارات، القياسات ومتابعة الحالة.</p>
+            <button type="button" class="v1-service-card__link" data-service="تمريض منزلي">
+              احجز الخدمة
+              <svg class="icon icon--sm icon--flip v1-service-card__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+        <article class="service-card v1-service-card">
+          <div class="v1-service-card__top">
+            <span class="v1-service-card__icon">
+              <svg class="icon icon--xl" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM19 8v6m-3-3h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="v1-service-card__number">03</span>
+          </div>
+          <div class="v1-service-card__body">
+            <h3 class="v1-service-card__title">مرافق صحي مقيم</h3>
+            <p class="v1-service-card__text">رعاية يومية موثوقة لكبار السن والمرضى، بفترات مرنة تناسب احتياج الأسرة.</p>
+            <button type="button" class="v1-service-card__link" data-service="مرافق صحي مقيم">
+              احجز الخدمة
+              <svg class="icon icon--sm icon--flip v1-service-card__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+        <article class="service-card v1-service-card">
+          <div class="v1-service-card__top">
+            <span class="v1-service-card__icon">
+              <svg class="icon icon--xl" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M8 4a4 4 0 1 0 8 0M12 8v12M7 12h10M9 20h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="v1-service-card__number">04</span>
+          </div>
+          <div class="v1-service-card__body">
+            <h3 class="v1-service-card__title">علاج طبيعي</h3>
+            <p class="v1-service-card__text">خطط علاج وتأهيل بعد العمليات والإصابات، يقدمها مختصون داخل المنزل.</p>
+            <button type="button" class="v1-service-card__link" data-service="علاج طبيعي">
+              احجز الخدمة
+              <svg class="icon icon--sm icon--flip v1-service-card__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/process -->
+  <section id="process" class="v1-process">
+    <div class="v1-process__inner">
+      <div class="v1-process__head">
+        <p class="eyebrow eyebrow--center">كيف نعمل</p>
+        <h2 class="section-title">ثلاث خطوات، وخل الباقي علينا.</h2>
+      </div>
+      <div class="v1-process__steps">
+        <div class="v1-process__line"></div>
+        <div class="v1-step">
+          <span class="v1-step__ring"><span class="v1-step__number">01</span></span>
+          <h3 class="v1-step__title">تواصل معنا</h3>
+          <p class="v1-step__text">أرسل لنا تفاصيل الحالة عبر الواتساب أو الاتصال.</p>
+        </div>
+        <div class="v1-step">
+          <span class="v1-step__ring"><span class="v1-step__number">02</span></span>
+          <h3 class="v1-step__title">نقيّم احتياجك</h3>
+          <p class="v1-step__text">يتواصل معك مختص لفهم الحالة واختيار مقدم الرعاية.</p>
+        </div>
+        <div class="v1-step">
+          <span class="v1-step__ring"><span class="v1-step__number">03</span></span>
+          <h3 class="v1-step__title">نجيك للبيت</h3>
+          <p class="v1-step__text">يصل فريقنا في الموعد ويبدأ خطة الرعاية المناسبة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/reviews -->
+  <section id="reviews" class="v1-reviews">
+    <div class="v1-container">
+      <div class="v1-reviews__grid">
+        <div>
+          <p class="eyebrow">تجارب حقيقية</p>
+          <h2 class="section-title">
+            كلامهم
+            <br />
+            يعني لنا الكثير.
+          </h2>
+          <div class="v1-reviews__rating">
+            <strong class="v1-reviews__score">4.9</strong>
+            <div>
+              <div class="v1-reviews__stars">★★★★★</div>
+              <p class="v1-reviews__note">بناءً على تقييمات عملائنا</p>
+            </div>
+          </div>
+        </div>
+        <blockquote class="v1-review-card">
+          <span class="v1-review-card__mark">“</span>
+          <p class="v1-review-card__text">
+            تجربة مريحة من أول اتصال. الممرضة وصلت في الموعد وكانت محترفة جداً مع الوالدة، وفريق
+            المتابعة تواصل معنا بعدها للاطمئنان. فعلاً حسّيت إننا في أيادٍ أمينة.
+          </p>
+          <footer class="v1-review-card__author">
+            <span class="v1-review-card__avatar">ن</span>
+            <div>
+              <cite class="v1-review-card__name">نورة العتيبي</cite>
+              <p class="v1-review-card__meta">خدمة تمريض منزلي — الرياض</p>
+            </div>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/booking -->
+  <section id="booking" class="v1-booking">
+    <div class="booking-lines v1-booking__lines"></div>
+    <div class="v1-booking__grid">
+      <div>
+        <p class="eyebrow">ابدأ الآن</p>
+        <h2 class="section-title v1-booking__title">
+          خطوتك الأولى
+          <br />
+          لرعاية أريح.
+        </h2>
+        <p class="v1-booking__text">
+          اترك بياناتك واختر الخدمة. بنفتح لك محادثة واتساب مباشرة مع فريق مبادر لتأكيد
+          التفاصيل.
+        </p>
+      </div>
+      <form class="v1-booking__form" data-booking-form>
+        <div class="v1-booking__row">
+          <label class="form-label">
+            الاسم
+            <input name="name" required placeholder="اكتب اسمك" class="form-input" />
+          </label>
+          <label class="form-label">
+            رقم الجوال
+            <input name="phone" required type="tel" placeholder="05xxxxxxxx" class="form-input" dir="rtl" />
+          </label>
+        </div>
+        <label class="form-label form-label--spaced">
+          الخدمة المطلوبة
+          <select name="service" class="form-input form-select" data-service-select>
+            <option selected>طبيب منزلي</option>
+            <option>تمريض منزلي</option>
+            <option>مرافق صحي مقيم</option>
+            <option>علاج طبيعي</option>
+            <option>أحتاج استشارة</option>
+          </select>
+        </label>
+        <button type="submit" class="v1-booking__submit">
+          تواصل عبر واتساب
+          <svg class="icon icon--md icon--flip" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <p class="v1-booking__note">بالضغط على الزر أنت توافق على سياسة الخصوصية</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/faq -->
+  <section id="faq" class="v1-faq">
+    <div class="v1-faq__grid">
+      <div>
+        <p class="eyebrow">الأسئلة الشائعة</p>
+        <h2 class="section-title">
+          عندك سؤال؟
+          <br />
+          عندنا الجواب.
+        </h2>
+        <p class="v1-faq__help">
+          ما لقيت جوابك؟
+          <a href="https://wa.me/966550000000" class="v1-faq__help-link">كلمنا مباشرة</a>
+        </p>
+      </div>
+      <div class="v1-faq__list" data-faq>
+        <div class="v1-faq__item">
+          <button type="button" class="v1-faq__question" aria-expanded="true">
+            <span class="v1-faq__question-text">هل خدمات مبادر مرخصة؟</span>
+            <span class="v1-faq__toggle">+</span>
+          </button>
+          <p class="v1-faq__answer">نعم، مبادر حاصل على ترخيص وزارة الصحة السعودية لتقديم خدمات الرعاية الصحية المنزلية.</p>
+        </div>
+        <div class="v1-faq__item">
+          <button type="button" class="v1-faq__question" aria-expanded="false">
+            <span class="v1-faq__question-text">ما المدن التي تغطيها الخدمة؟</span>
+            <span class="v1-faq__toggle">+</span>
+          </button>
+          <p class="v1-faq__answer" hidden>نقدم خدماتنا حاليًا داخل مدينة الرياض، ويؤكد لك فريقنا التغطية حسب الحي عند الحجز.</p>
+        </div>
+        <div class="v1-faq__item">
+          <button type="button" class="v1-faq__question" aria-expanded="false">
+            <span class="v1-faq__question-text">هل يمكن حجز مرافق لفترة قصيرة؟</span>
+            <span class="v1-faq__toggle">+</span>
+          </button>
+          <p class="v1-faq__answer" hidden>بالتأكيد. تتوفر باقات مرنة تبدأ من ساعات وتصل إلى رعاية مقيمة وفق احتياج الحالة.</p>
+        </div>
+        <div class="v1-faq__item">
+          <button type="button" class="v1-faq__question" aria-expanded="false">
+            <span class="v1-faq__question-text">كيف أختار الخدمة المناسبة؟</span>
+            <span class="v1-faq__toggle">+</span>
+          </button>
+          <p class="v1-faq__answer" hidden>لا تشيل هم. شاركنا تفاصيل الحالة وسيساعدك مختص الرعاية في اختيار الخدمة والمدة الأنسب.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pattern: mobader/footer -->
+  <footer class="v1-footer">
+    <div class="v1-footer__inner">
+      <div class="v1-footer__grid">
+        <div>
+          <a href="#home" class="v1-logo" aria-label="مبادر للرعاية الطبية المنزلية - الرئيسية">
+            <img src="logo.png" alt="مبادر للرعاية الطبية المنزلية" />
+          </a>
+          <p class="v1-footer__about">انسى رحلات المستشفى المرهقة. فريق مبادر يوفر لك رعاية طبية موثوقة داخل بيتك.</p>
+        </div>
+        <div>
+          <h3 class="v1-footer__heading">روابط مهمة</h3>
+          <div class="v1-footer__links">
+            <a href="#about">عن مبادر</a>
+            <a href="#services">خدماتنا</a>
+            <a href="#reviews">تجارب العملاء</a>
+          </div>
+        </div>
+        <div>
+          <h3 class="v1-footer__heading">خدماتنا</h3>
+          <div class="v1-footer__links">
+            <span>طبيب منزلي</span>
+            <span>تمريض منزلي</span>
+            <span>مرافق صحي</span>
+          </div>
+        </div>
+        <div>
+          <h3 class="v1-footer__heading">تواصل معنا</h3>
+          <p class="v1-footer__address">
+            مركز طايا التجاري، شارع العليا
+            <br />
+            الرياض، المملكة العربية السعودية
+          </p>
+          <a href="tel:+966550000000" class="v1-footer__phone" dir="ltr">+966 55 000 0000</a>
+        </div>
+      </div>
+      <div class="v1-footer__bottom">
+        <p>© 2026 مبادر للرعاية الطبية المنزلية. جميع الحقوق محفوظة.</p>
+        <div class="v1-footer__legal">
+          <a href="#">سياسة الخصوصية</a>
+          <a href="#">الشروط والأحكام</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Pattern: mobader/whatsapp-float -->
+  <a href="https://wa.me/966550000000" target="_blank" rel="noreferrer" aria-label="تواصل عبر واتساب" class="v1-whatsapp">
+    <svg class="icon icon--xl" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 11.6a8 8 0 0 1-11.8 7L3 20l1.4-5A8 8 0 1 1 20 11.6Z" stroke="currentColor" stroke-width="1.8" />
+      <path d="M8.5 8.5c.8 3 2 4.2 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  </a>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
