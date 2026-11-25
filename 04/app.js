@@ -1,4 +1,4 @@
-/* Mobader e5: menu + three faux-UI moments.
+/* Mobader 04: menu, two faux-UI moments, WhatsApp codes, demo form.
    The HTML already holds every final state, so with no JS or with
    reduced motion everything is visible. Scripts only replay the story. */
 (function () {
@@ -80,16 +80,16 @@
   var stepsWrap = document.querySelector('[data-steps]');
   if (visit && stepsWrap) {
     var STATES = [
-      { status: 'تم استلام طلبك', note: 'وصلنا طلبك من واتساب، والمنسق الطبي بيتصل عليك.' },
-      { status: 'المنسق أكد الموعد', note: 'فهمنا حالة المريض، وثبتنا الموعد اللي يناسبك.' },
-      { status: 'الطبيبة في الطريق لك', note: 'المنسق أكد الموعد معك، والطبيبة معها ملف الحالة.' },
-      { status: 'تقرير الزيارة جاهز', note: 'التشخيص والوصفة وخطة المتابعة، في رسالة وحدة.' }
+      { status: 'وصلنا طلبكم', note: 'قلتوا لنا وش تحتاجون ووين البيت، ونرتب الخدمة المناسبة.' },
+      { status: 'الممرض في الطريق لكم', note: 'رتبنا الخدمة المناسبة، والممرض جاي لكم بأدواته.' },
+      { status: 'نطمّن عليكم بعد الزيارة', note: 'نتابع الحالة معكم، ونرتب أي خطوة بعدها.' }
     ];
+    var LAST = STATES.length - 1;
     var statusEl = visit.querySelector('[data-status]');
     var noteEl = visit.querySelector('[data-note]');
     var segs = visit.querySelectorAll('[data-track] i');
     var stepBtns = stepsWrap.querySelectorAll('[data-step]');
-    var current = 2;
+    var current = 1;
     var auto = 0;
 
     var setStep = function (n, animate) {
@@ -97,8 +97,8 @@
       current = n;
       stepBtns.forEach(function (b, i) { b.setAttribute('aria-pressed', String(i === n)); });
       segs.forEach(function (s, i) {
-        s.classList.toggle('done', i < n || (n === 3 && i === 3));
-        s.classList.toggle('current', i === n && n !== 3);
+        s.classList.toggle('done', i < n || (n === LAST && i === LAST));
+        s.classList.toggle('current', i === n && n !== LAST);
       });
       var s = STATES[n];
       if (!animate || reduce) { statusEl.textContent = s.status; noteEl.textContent = s.note; return; }
@@ -123,7 +123,7 @@
       onView(visit, async function () {
         var id = ++auto;
         setStep(0, false);
-        for (var n = 1; n < 4; n++) {
+        for (var n = 1; n <= LAST; n++) {
           await sleep(2400); if (id !== auto) return;
           setStep(n, true);
         }
@@ -131,20 +131,25 @@
     }
   }
 
-  /* ---------- 3. Daily report ---------- */
-  var report = document.querySelector('[data-report]');
-  if (report && !reduce) {
-    var items = report.querySelectorAll('.rp-list li');
-    var count = report.querySelector('[data-count]');
-    onView(report, async function () {
-      items.forEach(function (li) { li.classList.remove('is-done'); });
-      count.textContent = 'تم 0 من 4';
-      await sleep(600);
-      for (var i = 0; i < items.length; i++) {
-        items[i].classList.add('is-done');
-        count.textContent = 'تم ' + (i + 1) + ' من 4';
-        await sleep(650);
-      }
+  /* ---------- 3. WhatsApp links get a request code ---------- */
+  var code = 'M-' + Math.floor(1000 + Math.random() * 9000);
+  document.querySelectorAll('[data-wa-svc]').forEach(function (a) {
+    a.href = 'https://wa.me/966114170700?text=' + encodeURIComponent('مرحبا، أبي أحجز ' + a.dataset.waSvc + '. رمز الطلب: ' + code);
+  });
+
+  /* ---------- 4. Callback form (demo only, sends nothing) ---------- */
+  var form = document.getElementById('cbForm');
+  if (form) {
+    var err = document.getElementById('cbErr');
+    var done = document.getElementById('cbDone');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ok = ['name', 'phone', 'district'].every(function (n) { return form.elements[n].value.trim() !== ''; });
+      err.hidden = ok;
+      if (!ok) return;
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
     });
   }
 })();
