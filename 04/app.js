@@ -37,13 +37,13 @@
     var msgs = Array.prototype.slice.call(chat.querySelectorAll('.msg'));
     var card = chat.querySelector('.card-bubble');
     var tap = chat.querySelector('.tap');
-    var replay = chat.querySelector('[data-replay]');
+    var cta = chat.querySelector('[data-chat-cta]');
     var run = 0;
 
     var playChat = async function () {
       var id = ++run;
       var alive = function () { return id === run; };
-      replay.hidden = true;
+      cta.classList.add('is-waiting');
       // Snap to the opening frame: the first message only.
       msgs.forEach(function (m, i) { m.classList.remove('is-typing'); m.classList.toggle('is-pending', i > 0); });
       chat.classList.add('chat-unconfirmed');
@@ -66,12 +66,12 @@
         }
         await sleep(950); if (!alive()) return;
       }
-      replay.hidden = false;
+      cta.classList.remove('is-waiting');
     };
 
     if (!reduce) {
+      cta.classList.add('is-waiting');
       onView(chat, playChat);
-      replay.addEventListener('click', playChat);
     }
   }
 
