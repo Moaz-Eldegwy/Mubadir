@@ -593,3 +593,8 @@ button { font: inherit; color: inherit; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* Review 2 (2026-11-26): clients B2B button, quieter logo names, final CTA card gutters below desktop */
+.cl-name { font-size: 12px; color: #737479; }
+.clients-cta { display: flex; justify-content: center; margin-block-start: 32px; }
+@media (max-width: 1279px) { .cta-grid { margin-inline: var(--gutter); } }

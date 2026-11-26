@@ -16,16 +16,15 @@
 .mfab-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgb(60 20 70 / .26), 0 3px 8px rgb(60 20 70 / .14); }
 .mfab-btn:active { transform: scale(.96); }
 .mfab-btn:focus-visible { outline: 3px solid #E9C8EE; outline-offset: 3px; }
-.mfab-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.mfab-ai { background: #fff; color: #92258E; box-shadow: 0 10px 24px rgb(60 20 70 / .16), inset 0 0 0 1.5px #EBD3EE; }
-.mfab-wa { background: #1FAF54; }
-.mfab-call { background: #92258E; width: 60px; height: 60px; }
-.mfab-call svg { width: 26px; height: 26px; }
+.mfab-btn svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.mfab-ai { background: #92258E; }
+.mfab-wa { background: #25D366; }
+.mfab-call { background: #25D366; }
 .mfab-call::after {
   content: ""; position: absolute; inset: 0; border-radius: 50%;
-  box-shadow: 0 0 0 0 rgb(146 37 142 / .45); animation: mfab-pulse 2.4s ease-out 1.2s 3;
+  box-shadow: 0 0 0 0 rgb(37 211 102 / .45); animation: mfab-pulse 2.4s ease-out 1.2s 3;
 }
-@keyframes mfab-pulse { to { box-shadow: 0 0 0 14px rgb(146 37 142 / 0); } }
+@keyframes mfab-pulse { to { box-shadow: 0 0 0 14px rgb(37 211 102 / 0); } }
 
 /* Tooltip label on hover (desktop only) */
 .mfab-btn .mfab-tip {
@@ -38,7 +37,7 @@
 
 /* AI assistant panel (placeholder until the real assistant is connected) */
 .mfab-panel {
-  position: fixed; z-index: 91; right: 16px; bottom: calc(16px + 54px * 2 + 60px + 12px * 3 + env(safe-area-inset-bottom, 0px));
+  position: fixed; z-index: 91; right: 16px; bottom: calc(16px + 54px * 3 + 12px * 3 + env(safe-area-inset-bottom, 0px));
   width: min(320px, calc(100vw - 32px)); padding: 18px; border-radius: 22px;
   background: #fff; color: #2B1430; direction: rtl; text-align: right;
   box-shadow: 0 24px 48px rgb(60 20 70 / .22), 0 0 0 1px #F0E2F2;
@@ -69,8 +68,7 @@ body.has-mfab { padding-bottom: 0; }
 /* Phones: slightly smaller so the stack covers less content. */
 @media (max-width: 480px) {
   .mfab { right: 12px; gap: 10px; }
-  .mfab-btn { width: 48px; height: 48px; }
-  .mfab-btn svg { width: 22px; height: 22px; }
-  .mfab-call { width: 54px; height: 54px; }
-  .mfab-panel { right: 12px; bottom: calc(12px + 48px * 2 + 54px + 10px * 3 + env(safe-area-inset-bottom, 0px)); }
+  .mfab-btn { width: 50px; height: 50px; }
+  .mfab-btn svg { width: 24px; height: 24px; }
+  .mfab-panel { right: 12px; bottom: calc(12px + 50px * 3 + 10px * 3 + env(safe-area-inset-bottom, 0px)); }
 }

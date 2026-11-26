@@ -662,3 +662,12 @@ details p a { color: var(--plum); font-weight: 700; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .btn:hover, .btn:active, .chip:hover, .tile:hover, .member:hover { transform: none; }
 }
+
+/* Review 2 (2026-11-26): clients B2B line + button, quieter logo names, hero ticks on phones */
+.clients .logo-name { font-size: 12px; font-weight: 500; color: #776C7C; }
+.clients-cta { display: flex; justify-content: center; margin-block-start: clamp(24px, 3vw, 36px); }
+@media (max-width: 767px) {
+  .hero-ticks .tick-area { display: none; }
+  .hero-ticks { flex-wrap: nowrap; gap: 6px 14px; }
+  .hero-ticks li { white-space: nowrap; }
+}
