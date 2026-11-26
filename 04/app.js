@@ -137,7 +137,32 @@
     a.href = 'https://wa.me/966114170700?text=' + encodeURIComponent('مرحبا، أبي أحجز ' + a.dataset.waSvc + '. رمز الطلب: ' + code);
   });
 
-  /* ---------- 4. Callback form (demo only, sends nothing) ---------- */
+  /* ---------- 4. Reviews slider arrows (RTL: next moves toward the left) ---------- */
+  var track = document.querySelector('[data-rv-track]');
+  if (track) {
+    var prev = document.querySelector('[data-rv="prev"]');
+    var next = document.querySelector('[data-rv="next"]');
+    var rtl = getComputedStyle(track).direction === 'rtl';
+    var stepW = function () {
+      var c = track.firstElementChild;
+      var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return c ? c.getBoundingClientRect().width + gap : track.clientWidth;
+    };
+    var update = function () {
+      var max = track.scrollWidth - track.clientWidth;
+      var pos = Math.abs(track.scrollLeft);
+      prev.disabled = pos <= 2;
+      next.disabled = pos >= max - 2;
+    };
+    var go = function (dir) { track.scrollBy({ left: dir * stepW() * (rtl ? -1 : 1), behavior: reduce ? 'auto' : 'smooth' }); };
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+
+  /* ---------- 5. Callback form (demo only, sends nothing) ---------- */
   var form = document.getElementById('cbForm');
   if (form) {
     var err = document.getElementById('cbErr');

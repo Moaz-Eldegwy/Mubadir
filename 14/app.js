@@ -137,6 +137,33 @@
     });
   }
 
+
+  /* ---------- Reviews slider: prev/next arrows (RTL aware) ---------- */
+  const track = document.getElementById('rvTrack');
+  if (track) {
+    const prev = document.querySelector('[data-sl="prev"]');
+    const next = document.querySelector('[data-sl="next"]');
+    const rtl = getComputedStyle(track).direction === 'rtl';
+    const step = () => {
+      const card = track.querySelector('.rv');
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return card ? card.offsetWidth + gap : track.clientWidth;
+    };
+    // In RTL, "next" moves toward the left (negative scrollLeft).
+    const go = (dir) => track.scrollBy({ left: dir * step() * (rtl ? -1 : 1), behavior: reduceMotion() ? 'auto' : 'smooth' });
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const pos = Math.abs(track.scrollLeft);
+      prev.disabled = pos <= 2;
+      next.disabled = pos >= max - 2;
+    };
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+
   /* ---------- Header: border on scroll + mobile menu ---------- */
   const header = document.getElementById('header');
   const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);

@@ -1,0 +1,76 @@
+/* Mobader floating contact buttons: AI assistant, WhatsApp, call.
+   Stacked circles, bottom right. Shared by gallery designs 01, 04 and 14. */
+.mfab {
+  position: fixed; z-index: 90; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-family: inherit;
+}
+.mfab-btn {
+  position: relative; display: grid; place-items: center;
+  width: 54px; height: 54px; padding: 0; border: 0; border-radius: 50%;
+  color: #fff; cursor: pointer; text-decoration: none;
+  box-shadow: 0 10px 24px rgb(60 20 70 / .22), 0 2px 6px rgb(60 20 70 / .12);
+  transition: transform .18s ease, box-shadow .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.mfab-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgb(60 20 70 / .26), 0 3px 8px rgb(60 20 70 / .14); }
+.mfab-btn:active { transform: scale(.96); }
+.mfab-btn:focus-visible { outline: 3px solid #E9C8EE; outline-offset: 3px; }
+.mfab-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mfab-ai { background: #fff; color: #92258E; box-shadow: 0 10px 24px rgb(60 20 70 / .16), inset 0 0 0 1.5px #EBD3EE; }
+.mfab-wa { background: #1FAF54; }
+.mfab-call { background: #92258E; width: 60px; height: 60px; }
+.mfab-call svg { width: 26px; height: 26px; }
+.mfab-call::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: 0 0 0 0 rgb(146 37 142 / .45); animation: mfab-pulse 2.4s ease-out 1.2s 3;
+}
+@keyframes mfab-pulse { to { box-shadow: 0 0 0 14px rgb(146 37 142 / 0); } }
+
+/* Tooltip label on hover (desktop only) */
+.mfab-btn .mfab-tip {
+  position: absolute; right: calc(100% + 10px); top: 50%; translate: 0 -50%;
+  padding: 6px 12px; border-radius: 999px; background: #2B1430; color: #fff;
+  font-size: .8125rem; font-weight: 600; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .15s ease;
+}
+@media (hover: hover) { .mfab-btn:hover .mfab-tip, .mfab-btn:focus-visible .mfab-tip { opacity: 1; } }
+
+/* AI assistant panel (placeholder until the real assistant is connected) */
+.mfab-panel {
+  position: fixed; z-index: 91; right: 16px; bottom: calc(16px + 54px * 2 + 60px + 12px * 3 + env(safe-area-inset-bottom, 0px));
+  width: min(320px, calc(100vw - 32px)); padding: 18px; border-radius: 22px;
+  background: #fff; color: #2B1430; direction: rtl; text-align: right;
+  box-shadow: 0 24px 48px rgb(60 20 70 / .22), 0 0 0 1px #F0E2F2;
+  transform-origin: bottom right; animation: mfab-in .2s ease-out;
+}
+.mfab-panel[hidden] { display: none; }
+@keyframes mfab-in { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+.mfab-panel-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.mfab-panel-top .mfab-av { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #F6EAF7; color: #92258E; }
+.mfab-panel-top .mfab-av svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mfab-panel-top b { display: block; font-size: 1rem; }
+.mfab-panel-top small { display: block; font-size: .8125rem; color: #7B6B7E; }
+.mfab-close { margin-inline-start: auto; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: #7B6B7E; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.mfab-panel p { margin: 0 0 14px; font-size: .9375rem; line-height: 1.8; color: #4A3A4D; }
+.mfab-panel a {
+  display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px;
+  border-radius: 999px; background: #1FAF54; color: #fff; font-weight: 700; text-decoration: none;
+}
+.mfab-panel a svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mfab-btn, .mfab-panel { transition: none; animation: none; }
+  .mfab-call::after { animation: none; }
+}
+/* Keep page content clear of the buttons at the very bottom (footer). */
+body.has-mfab { padding-bottom: 0; }
+
+/* Phones: slightly smaller so the stack covers less content. */
+@media (max-width: 480px) {
+  .mfab { right: 12px; gap: 10px; }
+  .mfab-btn { width: 48px; height: 48px; }
+  .mfab-btn svg { width: 22px; height: 22px; }
+  .mfab-call { width: 54px; height: 54px; }
+  .mfab-panel { right: 12px; bottom: calc(12px + 48px * 2 + 54px + 10px * 3 + env(safe-area-inset-bottom, 0px)); }
+}

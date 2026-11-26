@@ -35,6 +35,34 @@
     });
   }
 
+  // Reviews slider: prev/next arrows (RTL: "next" scrolls toward the left).
+  var track = document.getElementById('rvTrack');
+  if (track) {
+    var rtl = getComputedStyle(track).direction === 'rtl';
+    var prev = document.querySelector('.rv-btn[data-dir="prev"]');
+    var next = document.querySelector('.rv-btn[data-dir="next"]');
+    var step = function () {
+      var c = track.firstElementChild;
+      return c ? c.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0) : track.clientWidth;
+    };
+    var sync = function () {
+      var max = track.scrollWidth - track.clientWidth;
+      var pos = Math.abs(track.scrollLeft);
+      if (prev) prev.disabled = pos <= 2;
+      if (next) next.disabled = pos >= max - 2;
+    };
+    [prev, next].forEach(function (b) {
+      if (!b) return;
+      b.addEventListener('click', function () {
+        var dir = b.getAttribute('data-dir') === 'next' ? 1 : -1;
+        track.scrollBy({ left: dir * step() * (rtl ? -1 : 1), behavior: 'smooth' });
+      });
+    });
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  }
+
   // Mobile menu
   var btn = document.querySelector('.menu-btn');
   var menu = document.getElementById('mobile-menu');
